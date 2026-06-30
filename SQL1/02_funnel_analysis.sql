@@ -1,4 +1,13 @@
--- Conversion rate by channel
+-- Conversion rate by campaign
+SELECT
+    Campaign,
+    UTM_Source,
+    COUNT(*) AS total_touchpoints,
+    SUM(Converted) AS total_conversions,
+    ROUND(SUM(Converted) * 100.0 / COUNT(*), 2) AS conversion_rate
+FROM fact_marketing
+GROUP BY Campaign, UTM_Source
+ORDER BY conversion_rate DESC;-- Conversion rate by channel
 SELECT
     UTM_Source,
     COUNT(*) AS total_touchpoints,
