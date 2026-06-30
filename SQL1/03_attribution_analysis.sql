@@ -1,4 +1,28 @@
--- First-Touch Attribution
+-- Last-Touch Attribution
+-- Gives 100% credit to the LAST 
+-- touchpoint before conversion
+WITH last_touch AS (
+    SELECT 
+        User_ID, 
+        UTM_Source,
+        ROW_NUMBER() OVER (
+            PARTITION BY User_ID 
+            ORDER BY Timestamp_Raw DESC
+        ) AS rn
+    FROM fact_marketing
+    WHERE Converted = 1
+)
+SELECT 
+    UTM_Source, 
+    COUNT(*) AS last_touch_count,
+    ROUND(
+        COUNT(*) * 100.0 / 
+        SUM(COUNT(*)) OVER(), 2
+    ) AS percentage_of_conversions
+FROM last_touch 
+WHERE rn = 1
+GROUP BY UTM_Source 
+ORDER BY last_touch_count DESC;-- First-Touch Attribution
 -- Gives 100% credit to the FIRST 
 -- touchpoint per user
 WITH first_touch AS (
