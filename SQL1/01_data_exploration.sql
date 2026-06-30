@@ -1,4 +1,8 @@
--- ============================================
+-- Date range check
+SELECT 
+    MIN(Timestamp_Raw) AS earliest_touchpoint,
+    MAX(Timestamp_Raw) AS latest_touchpoint
+FROM fact_marketing;-- ============================================
 -- DATA EXPLORATION
 -- Multi-Touch Marketing Attribution Project
 -- ============================================
