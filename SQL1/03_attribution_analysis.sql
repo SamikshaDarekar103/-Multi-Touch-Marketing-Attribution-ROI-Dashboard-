@@ -1,4 +1,27 @@
--- ============================================
+-- First-Touch Attribution
+-- Gives 100% credit to the FIRST 
+-- touchpoint per user
+WITH first_touch AS (
+    SELECT 
+        User_ID, 
+        UTM_Source,
+        ROW_NUMBER() OVER (
+            PARTITION BY User_ID 
+            ORDER BY Timestamp_Raw ASC
+        ) AS rn
+    FROM fact_marketing
+)
+SELECT 
+    UTM_Source, 
+    COUNT(*) AS first_touch_count,
+    ROUND(
+        COUNT(*) * 100.0 / 
+        SUM(COUNT(*)) OVER(), 2
+    ) AS percentage_of_users
+FROM first_touch 
+WHERE rn = 1
+GROUP BY UTM_Source 
+ORDER BY first_touch_count DESC;-- ============================================
 -- ATTRIBUTION ANALYSIS
 -- Multi-Touch Marketing Attribution Project
 -- ============================================
