@@ -1,4 +1,27 @@
--- Last-Touch Attribution
+-- Linear Attribution
+-- Splits credit equally across 
+-- every touchpoint per user
+WITH journeys AS (
+    SELECT 
+        User_ID, 
+        UTM_Source,
+        COUNT(*) OVER (
+            PARTITION BY User_ID
+        ) AS total_touchpoints
+    FROM fact_marketing
+)
+SELECT 
+    UTM_Source, 
+    ROUND(
+        SUM(1.0/total_touchpoints), 2
+    ) AS linear_attribution_credit,
+    ROUND(
+        SUM(1.0/total_touchpoints) * 100.0 / 
+        SUM(SUM(1.0/total_touchpoints)) OVER(), 2
+    ) AS percentage_of_credit
+FROM journeys
+GROUP BY UTM_Source 
+ORDER BY linear_attribution_credit DESC;-- Last-Touch Attribution
 -- Gives 100% credit to the LAST 
 -- touchpoint before conversion
 WITH last_touch AS (
