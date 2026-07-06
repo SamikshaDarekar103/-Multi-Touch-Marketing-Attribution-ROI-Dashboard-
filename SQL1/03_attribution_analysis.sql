@@ -148,4 +148,14 @@ SELECT
     ) AS total_touchpoints
 FROM fact_marketing
 ORDER BY User_ID, Timestamp_Raw
-LIMIT 50;
+
+
+-- ============================================
+-- KEY FINDINGS:
+-- First-Touch: identifies awareness channels
+-- Last-Touch: identifies conversion channels  
+-- Linear: fairly distributes credit across 
+--          all touchpoints in the journey
+-- Run each model separately then use the
+-- combined query for side-by-side comparison
+-- ============================================
